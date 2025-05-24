@@ -34,8 +34,10 @@ func evalStatements(stmts []ast.Statement) object.Object {
 /*
 * Instead of creating a new object.Boolean every time
 * a true/false is seen... just reference them
+* same with NULL
 * */
 var (
+	NULL  = &object.Null{}
 	TRUE  = &object.Boolean{Value: true}
 	FALSE = &object.Boolean{Value: false}
 )
