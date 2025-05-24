@@ -2,6 +2,7 @@ package repl
 
 import (
 	"bufio"
+	"divakaivan/lang-interpreter-go/evaluator"
 	"divakaivan/lang-interpreter-go/lexer"
 	"divakaivan/lang-interpreter-go/parser"
 	"fmt"
@@ -12,7 +13,7 @@ import (
 
 const PROMPT = ">> "
 
-func Start(in io.Reader, out io.Writer) {
+func Start(in io.Reader, out io.Writer, showAST bool) {
 	scanner := bufio.NewScanner(in)
 	for {
 		fmt.Print(PROMPT)
@@ -28,9 +29,16 @@ func Start(in io.Reader, out io.Writer) {
 			printParserErrors(out, p.Errors())
 			continue
 		}
-		// io.WriteString(out, program.String())
-		// io.WriteString(out, "\n")
-		litter.Dump(program)
+		evaluated := evaluator.Eval(program)
+		if evaluated != nil {
+			io.WriteString(out, program.String())
+			io.WriteString(out, "\n")
+		}
+
+		if showAST {
+			litter.Dump(program)
+		}
+
 	}
 }
 
