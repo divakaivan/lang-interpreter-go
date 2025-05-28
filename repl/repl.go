@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"divakaivan/lang-interpreter-go/evaluator"
 	"divakaivan/lang-interpreter-go/lexer"
+	"divakaivan/lang-interpreter-go/object"
 	"divakaivan/lang-interpreter-go/parser"
 	"fmt"
 	"io"
@@ -15,6 +16,7 @@ const PROMPT = ">> "
 
 func Start(in io.Reader, out io.Writer, showAST bool) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
 	for {
 		fmt.Print(PROMPT)
 		scanned := scanner.Scan()
@@ -29,7 +31,7 @@ func Start(in io.Reader, out io.Writer, showAST bool) {
 			printParserErrors(out, p.Errors())
 			continue
 		}
-		evaluated := evaluator.Eval(program)
+		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")
